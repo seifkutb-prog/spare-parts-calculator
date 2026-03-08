@@ -6,4 +6,8 @@ results.xlsx
 *.egg-info/
 dist/
 build/
+uploads/
+*.xlsx
+*.pdf
+flask_session/
 

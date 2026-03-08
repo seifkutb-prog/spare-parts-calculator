@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Results — {{ station }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Analysis Results — {{ station }}</h1>
+      <a href="/" class="btn-secondary">Upload New File</a>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="summary-grid">
+      <div class="summary-card"><div class="num">{{ summary.total_parts }}</div><div class="lbl">Total Parts</div></div>
+      <div class="summary-card class-a"><div class="num">{{ summary.class_a }}</div><div class="lbl">Class A (Critical)</div></div>
+      <div class="summary-card class-b"><div class="num">{{ summary.class_b }}</div><div class="lbl">Class B (Moderate)</div></div>
+      <div class="summary-card class-c"><div class="num">{{ summary.class_c }}</div><div class="lbl">Class C (Low Value)</div></div>
+      <div class="summary-card"><div class="num">EGP {{ '{:,.0f}'.format(summary.total_stock_value) }}</div><div class="lbl">Total Stock Value</div></div>
+      <div class="summary-card"><div class="num">{{ summary.avg_turnover }}</div><div class="lbl">Avg Turnover Rate</div></div>
+    </div>
+
+    <!-- Download Buttons -->
+    <div class="download-bar">
+      <a href="/download/excel" class="btn-primary">Download Excel Report</a>
+      <a href="/download/pdf"   class="btn-secondary">Download PDF Report</a>
+    </div>
+
+    <!-- Results Table -->
+    <div class="table-wrap">
+      <table class="results-table">
+        <thead>
+          <tr>
+            <th>Part Name</th><th>ABC</th><th>Cons/Mo</th>
+            <th>Reorder Point</th><th>Safety Stock</th>
+            <th>Rec. Qty</th><th>EOQ</th><th>Turnover</th>
+            <th>Stock Value (EGP)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in results %}
+          <tr class="abc-{{ item.abc_class }}">
+            <td>{{ item.part_name }}</td>
+            <td><span class="badge badge-{{ item.abc_class }}">{{ item.abc_class }}</span></td>
+            <td>{{ item.consumption_rate }}</td>
+            <td>{{ item.reorder_point }}</td>
+            <td>{{ item.safety_stock }}</td>
+            <td><strong>{{ item.recommended_qty }}</strong></td>
+            <td>{{ item.eoq }}</td>
+            <td>{{ item.turnover_rate }}</td>
+            <td>{{ '{:,.0f}'.format(item.total_stock_value) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

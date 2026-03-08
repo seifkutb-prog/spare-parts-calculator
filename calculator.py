@@ -1,34 +1,50 @@
+import math
+
 def calculate_consumption_rate(total_faults, months):
-    """
-    How many faults happen per month on average.
-    Example: 12 faults over 6 months = 2 faults/month
-    """
+    """Average monthly consumption rate."""
     if months <= 0:
-        raise ValueError(f'Months must be greater than zero. Got: {months}')
-    return round(total_faults / months, 2)
+        raise ValueError(f'Months must be > 0, got {months}')
+    return round(total_faults / months, 3)
 
 
 def calculate_reorder_point(avg_daily_consumption, lead_time_days):
-    """
-    The stock level at which you must place a new order.
-    Formula: Average daily use × Lead time in days
-    """
-    if lead_time_days < 0:
-        raise ValueError(f'Lead time cannot be negative. Got: {lead_time_days}')
-    return round(avg_daily_consumption * lead_time_days, 0)
+    """Stock level at which a new order must be placed."""
+    return round(avg_daily_consumption * lead_time_days, 1)
 
 
 def calculate_safety_stock(max_demand, avg_demand, lead_time):
+    """Buffer stock to absorb demand variation."""
+    return round(max(0, (max_demand - avg_demand) * lead_time), 1)
+
+
+def calculate_eoq(annual_demand, ordering_cost, holding_cost_per_unit):
     """
-    Extra buffer stock to handle unexpected demand spikes.
-    Formula: (Max demand - Average demand) × Lead time
+    Economic Order Quantity — the optimal order size that
+    minimizes total inventory cost.
+    Formula: EOQ = sqrt( (2 × D × S) / H )
+      D = Annual demand (units/year)
+      S = Cost per order (ordering cost)
+      H = Holding cost per unit per year
     """
-    return round(max(0, (max_demand - avg_demand) * lead_time), 0)
+    if holding_cost_per_unit <= 0 or annual_demand <= 0:
+        return 0
+    return round(math.sqrt((2 * annual_demand * ordering_cost) / holding_cost_per_unit), 0)
+
+
+def calculate_turnover_rate(consumption_rate, avg_stock):
+    """
+    How many times stock is fully consumed and replenished per year.
+    High turnover = fast moving = good.
+    Low turnover = slow moving = dead stock risk.
+    """
+    if avg_stock <= 0:
+        return 0
+    annual_consumption = consumption_rate * 12
+    return round(annual_consumption / avg_stock, 2)
 
 
 def calculate_recommended_qty(reorder_point, safety_stock):
-    """
-    Total quantity to keep in stock at all times.
-    """
+    """Total quantity to keep in stock."""
     return int(reorder_point + safety_stock)
+
 

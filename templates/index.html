@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spare Parts Intelligence Platform</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Spare Parts Intelligence Platform</h1>
+      <p>Upload your spare parts data and get instant analysis</p>
+    </div>
+
+    {% if error %}
+    <div class="error-box">{{ error }}</div>
+    {% endif %}
+
+    <div class="card">
+      <h2>Upload Your Data File</h2>
+      <p>Accepted formats: <strong>.xlsx</strong> or <strong>.csv</strong></p>
+      <p>Required columns: part_name, monthly_faults, months_recorded,
+         lead_time_days, max_demand, unit_cost</p>
+
+      <form action="/analyze" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+          <label>Station / Depot Name</label>
+          <input type="text" name="station" placeholder="e.g. Cairo Depot" required>
+        </div>
+        <div class="form-group">
+          <label>Select Data File</label>
+          <input type="file" name="file" accept=".xlsx,.csv" required>
+        </div>
+        <button type="submit" class="btn-primary">Analyze Parts</button>
+      </form>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-card"><h3>EOQ</h3><p>Economic Order Quantity — optimal order size</p></div>
+      <div class="info-card"><h3>ABC</h3><p>Classify parts by annual consumption value</p></div>
+      <div class="info-card"><h3>ROP</h3><p>Reorder Point — when to place a new order</p></div>
+      <div class="info-card"><h3>Turnover</h3><p>Stock turnover rate — detect dead stock</p></div>
+    </div>
+  </div>
+</body>
+</html>
