@@ -1,1 +1,9 @@
+__pycache__/
+*.pyc
+*.pyo
+results.xlsx
+.env
+*.egg-info/
+dist/
+build/
 
